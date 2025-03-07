@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
-import User from '../models/User';
-import { signToken } from '../services/auth';
+import User from '../models/User.js';
+import { signToken } from '../services/auth.js';
 
 interface addUserArgs {
     userInput: {
