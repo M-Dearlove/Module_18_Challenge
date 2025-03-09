@@ -4,14 +4,12 @@ const connectDB = async () => {
   try {
     const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/googlebooks';
     
-    // Connection options
-    const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      ssl: uri.includes('mongodb+srv'),
-      tlsAllowInvalidHostnames: false,
-      retryWrites: true
-    };
+    // Only apply TLS options when connecting to Atlas
+    const options = uri.includes('mongodb+srv') ? {
+      ssl: true,
+      tls: true,
+      tlsAllowInvalidHostnames: false
+    } : {};
     
     await mongoose.connect(uri, options);
     console.log('MongoDB connected successfully');
