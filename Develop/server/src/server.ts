@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 // Import the two parts of a GraphQL schema
 import { typeDefs, resolvers } from './schemas/index.js';
+import { authenticateToken } from './services/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,7 +34,9 @@ const startApolloServer = async () => {
   app.use(express.json());
 
   app.use('/graphql', expressMiddleware(server));
-
+  app.use('/graphql', expressMiddleware(server, {
+    context: authenticateToken
+  }));
   // if we're in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/build')));
