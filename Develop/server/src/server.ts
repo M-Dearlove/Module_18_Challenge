@@ -33,14 +33,17 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
-  app.use('/graphql', expressMiddleware(server));
   app.use('/graphql', expressMiddleware(server, {
     context: authenticateToken
   }));
   // if we're in production, serve client/build as static assets
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+  if (process.env.NODE_ENV !== 'development') {
+    app.use(express.static(path.join(__dirname, '../../client/dist')));
   }
+
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
 
   app.listen(PORT, () => {
     console.log(`API server running on port ${PORT}!`);
